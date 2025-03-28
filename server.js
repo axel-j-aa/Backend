@@ -123,11 +123,12 @@ app.post("/api/task", async (req, res) => {
   try {
     const { category, deadline, description, nameTask, status, userId, groupName } = req.body;
 
-    // Validar los campos obligatorios sin verificar groupName
+    // Verificación de campos obligatorios
     if (!category || !deadline || !description || !nameTask || !status || !userId) {
       return res.status(400).json({ message: "Todos los campos son obligatorios, excepto el nombre del grupo" });
     }
 
+    // Validación del formato de la fecha límite
     const deadlineDate = moment(deadline, moment.ISO_8601);
     if (!deadlineDate.isValid()) {
       return res.status(400).json({ message: "El formato de la fecha límite es inválido" });
@@ -135,7 +136,17 @@ app.post("/api/task", async (req, res) => {
 
     const firestoreDeadline = admin.firestore.Timestamp.fromDate(deadlineDate.toDate());
 
-    // Crear el objeto de tarea con groupName opcional
+    // Verificar si ya existe una tarea con el mismo nombre y usuario
+    const existingTasks = await db.collection("task")
+      .where("nameTask", "==", nameTask)
+      .where("userId", "==", userId)
+      .get();
+
+    if (!existingTasks.empty) {
+      return res.status(400).json({ message: "Ya existe una tarea con este nombre para este usuario" });
+    }
+
+    // Crear tarea
     const task = {
       category,
       deadline: firestoreDeadline,
@@ -143,19 +154,21 @@ app.post("/api/task", async (req, res) => {
       nameTask,
       status,
       userId,
-      groupName: groupName || null, // Si no se pasa groupName, se asigna null
+      groupName: groupName || null,
       createdAt: admin.firestore.FieldValue.serverTimestamp(),
     };
 
+    // Guardar tarea en la base de datos
     const docRef = await db.collection("task").add(task);
 
-    res.status(201).json({ message: "Tarea creada exitosamente", id: docRef.id });
+    // Responder con éxito
+    return res.status(201).json({ message: "Tarea creada exitosamente", id: docRef.id });
   } catch (error) {
+    // Capturar errores del servidor
     console.error("Error al crear tarea:", error);
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: "Error interno del servidor. No se pudo crear la tarea." });
   }
 });
-
 
 
 
