@@ -318,9 +318,6 @@ app.patch("/api/task/edit", async (req, res) => {
   }
 });
 
-
-
-
 // Ruta para obtener usuarios desde Firestore
 app.get("/api/usuarios", async (req, res) => {
   try {
@@ -419,12 +416,12 @@ app.get("/api/groups", async (req, res) => {
           id: doc.id,
           name: group.name,
           description: group.description,
-          createdAt: group.createdAt ? group.createdAt.toDate().toISOString() : null,  // Convertir fecha a formato ISO
+          createdAt: group.createdAt ? group.createdAt.toDate().toISOString() : null, 
           members: group.members,
         };
       });
 
-      console.log("Grupos creados encontrados:", createdGroups);  // Mostrar los grupos creados en la consola
+      console.log("Grupos creados encontrados:", createdGroups); 
       return res.status(200).json(createdGroups);
     }
 
@@ -446,9 +443,6 @@ app.get("/api/groups", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-
-
 
 // Editar un grupo
 app.put("/api/groups/:id", async (req, res) => {
