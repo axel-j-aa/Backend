@@ -350,12 +350,23 @@ app.get("/api/usuarios", async (req, res) => {
   }
 });
 
-
-
 app.post('/api/groups', async (req, res) => {
   const { created_by, description, members, name } = req.body;
 
   try {
+    // Paso 1: Verificar si ya existe un grupo con el mismo nombre para el mismo usuario
+    const groupsRef = db.collection('groups');
+    const snapshot = await groupsRef
+      .where('created_by', '==', created_by)
+      .where('name', '==', name)
+      .get();
+
+    if (!snapshot.empty) {
+      // Si ya existe un grupo con ese nombre para este usuario, devolvemos un error
+      return res.status(400).json({ message: "Ya existe un grupo con ese nombre para este usuario" });
+    }
+
+    // Paso 2: Si no existe, creamos el nuevo grupo
     const newGroup = {
       created_by,
       description,
@@ -372,8 +383,6 @@ app.post('/api/groups', async (req, res) => {
     res.status(500).json({ message: "Error al crear el grupo" });
   }
 });
-
-
 
 
 app.get("/api/groups", async (req, res) => {
@@ -430,7 +439,6 @@ app.get("/api/groups", async (req, res) => {
       };
     });
 
-    console.log("Grupos encontrados por membresía:", groups);  // Mostrar los grupos encontrados por membresía
 
     res.status(200).json(groups);
   } catch (error) {
