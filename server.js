@@ -68,7 +68,6 @@ app.post("/api/register", async (req, res) => {
 
 require('dotenv').config();
 const moment = require('moment');
-
 app.post("/api/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -117,8 +116,6 @@ app.post("/api/login", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-
 app.post("/api/task", async (req, res) => {
   try {
     const { category, deadline, description, nameTask, status, userId, groupName } = req.body;
@@ -170,11 +167,6 @@ app.post("/api/task", async (req, res) => {
   }
 });
 
-
-
-
-
-
 app.get("/api/tasks", async (req, res) => {
   try {
     const { userId } = req.query;
@@ -224,8 +216,6 @@ app.post("/api/task/complete", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-
 app.post("/api/task/pending", async (req, res) => {
   try {
     const { taskId } = req.body;
@@ -247,8 +237,6 @@ app.post("/api/task/pending", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-
 app.delete("/api/task/delete", async (req, res) => {
   try {
     const { taskId } = req.body;
@@ -270,8 +258,6 @@ app.delete("/api/task/delete", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-
 app.patch("/api/task/edit", async (req, res) => {
   try {
     const { taskId, category, deadline, description, nameTask, status } = req.body;
@@ -317,8 +303,6 @@ app.patch("/api/task/edit", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-// Ruta para obtener usuarios desde Firestore
 app.get("/api/usuarios", async (req, res) => {
   try {
     const usersSnapshot = await db.collection("users").get(); // Asegúrate de que la colección "users" existe en Firestore
@@ -346,7 +330,6 @@ app.get("/api/usuarios", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
 app.post('/api/groups', async (req, res) => {
   const { created_by, description, members, name } = req.body;
 
@@ -380,8 +363,6 @@ app.post('/api/groups', async (req, res) => {
     res.status(500).json({ message: "Error al crear el grupo" });
   }
 });
-
-
 app.get("/api/groups", async (req, res) => {
   try {
     const { userId } = req.query;  // El ID del usuario debe ser pasado en la query
@@ -443,8 +424,6 @@ app.get("/api/groups", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-// Editar un grupo
 app.put("/api/groups/:id", async (req, res) => {
   try {
     const groupId = req.params.id;
@@ -475,8 +454,6 @@ app.put("/api/groups/:id", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-
 app.delete("/api/groups/:id", async (req, res) => {
   try {
     const groupId = req.params.id;
@@ -510,12 +487,6 @@ app.delete("/api/groups/:id", async (req, res) => {
     res.status(500).json({ message: "Error al eliminar el grupo" });
   }
 });
-
-
-
-
-
-// Ruta para obtener los grupos a los que pertenece un usuario
 app.get("/api/misgrupos", async (req, res) => {
   try {
     const { userId } = req.query;  // El ID del usuario debe ser pasado en la query
@@ -554,8 +525,6 @@ app.get("/api/misgrupos", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
-
-
 app.get("/api/tareas", async (req, res) => {
   try {
     const { groupId } = req.query; // Aquí obtenemos el ID del grupo que queremos filtrar
@@ -583,10 +552,6 @@ app.get("/api/tareas", async (req, res) => {
     res.status(500).json({ message: "Error al obtener las tareas" });
   }
 });
-
-
-
-
 app.put("/api/tareas/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -605,7 +570,6 @@ app.put("/api/tareas/:id", async (req, res) => {
     res.status(500).json({ message: "Error al actualizar la tarea" });
   }
 });
-
 app.get("/api/usuarios", async (req, res) => {
   try {
     const usersSnapshot = await db.collection("users").get();
@@ -632,9 +596,6 @@ app.get("/api/usuarios", async (req, res) => {
     res.status(500).json({ message: "Error al obtener los usuarios" });
   }
 });
-
-
-
 app.put("/api/usuarios/:id", async (req, res) => {
   const { id } = req.params;
   const { email, username, rol } = req.body;
